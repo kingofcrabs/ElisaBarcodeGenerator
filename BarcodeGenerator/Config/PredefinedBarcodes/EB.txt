@@ -1,0 +1,3 @@
+[Grid26]
+1 = EB_VCA
+2 = EB_EA

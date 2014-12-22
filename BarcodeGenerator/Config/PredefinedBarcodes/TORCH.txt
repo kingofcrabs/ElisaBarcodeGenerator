@@ -1,0 +1,6 @@
+[Grid26]
+1 = TOX_IgM
+2 = RUB_IgM
+3 = CMV_IgM
+[Grid32]
+1 = HSV_IgM
