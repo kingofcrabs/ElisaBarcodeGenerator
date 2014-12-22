@@ -5,18 +5,11 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BarcodeGenerator
 {
@@ -112,7 +105,7 @@ namespace BarcodeGenerator
                 {
                     SetInfo("", Colors.Green);
                 }
-                WriteSampleBarcodes();
+                WriteBarcodes4PosID();
                 Utility.SaveSetting(dgvSampleBarcode, sampleCount);
                 Utility.Move2WorkingFolder();
             }
@@ -125,14 +118,67 @@ namespace BarcodeGenerator
             this.Close();
             Utility.WriteExecuteResult(bok);
         }
-
-        private void WriteSampleBarcodes()
+        #region merge with predefined barcodes
+        private void WriteBarcodes4PosID()
         {
-            string sFileBarcode = Utility.GetBarcodesFolder() + "sampleBarcodes.txt";
+            //string sFileBarcode = Utility.GetBarcodesFolder() + "sampleBarcodes.txt";
             string sFileCnt = Utility.GetBarcodesFolder() + "sampleCnt.txt";
-            File.WriteAllLines(sFileBarcode, GetSampleBarcodes());
+            List<string> sampleBarcodes = GetSampleBarcodes();
+            Dictionary<string, string> predefinedPanelName_PathDict = GetAllPredefinedPlateNames();
+            string sDate = DateTime.Now.ToString("yyMMddhhmmss");
+            foreach(var pair in predefinedPanelName_PathDict)
+            {
+                WriteBarcodeAfterMerge(sampleBarcodes,pair,sDate);
+            }
             File.WriteAllText(sFileCnt, sampleCount.ToString());
         }
+
+        private void WriteBarcodeAfterMerge(List<string> allbarcodes,
+            KeyValuePair<string, string> name_path,
+            string sDate)
+        {
+            string[] predefinedBarcodes = GetPredefinedBarcodesAppendWithDateInfo(name_path.Value, sDate);
+            allbarcodes.AddRange(predefinedBarcodes);
+            string sFile = Utility.GetBarcodesFolder() + name_path.Key + ".txt";
+            File.WriteAllLines(sFile, allbarcodes);
+        }
+        private static string[] GetPredefinedBarcodesAppendWithDateInfo(string sFile, string sDate)
+        {
+            string[] allPredefinedLines = new string[1];
+            if (File.Exists(sFile))
+            {
+                allPredefinedLines = File.ReadAllLines(sFile);
+                AddDateInfo(allPredefinedLines, sDate);
+            }
+            return allPredefinedLines;
+        }
+
+        private Dictionary<string, string> GetAllPredefinedPlateNames()
+        {
+            string sFolder = Utility.GetPredefinedBarcodesFolder();
+            string[] allFilePaths = Directory.GetFiles(sFolder, "*.txt");
+            Dictionary<string, string> panelNames = new Dictionary<string, string>();
+            foreach (string sFilePath in allFilePaths)
+            {
+                FileInfo fileInfo = new FileInfo(sFilePath);
+                panelNames.Add(fileInfo.Name, sFilePath);
+            }
+            return panelNames;
+        }
+
+        private static void AddDateInfo(string[] allLines, string sDate)
+        {
+            for (int i = 0; i < allLines.Length; i++)
+            {
+                char last = allLines[i].Last();
+                if (last == '$' || last == ']')
+                    continue;
+                allLines[i] += sDate;
+            }
+        }
+        #endregion
+
+        
         private List<string> GetSampleBarcodes()
         {
             List<string> sampleBarcodesInfo = new List<string>();
