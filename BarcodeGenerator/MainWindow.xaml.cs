@@ -133,14 +133,15 @@ namespace BarcodeGenerator
             File.WriteAllText(sFileCnt, sampleCount.ToString());
         }
 
-        private void WriteBarcodeAfterMerge(List<string> allbarcodes,
+        private void WriteBarcodeAfterMerge(List<string> allSamplebarcodes,
             KeyValuePair<string, string> name_path,
             string sDate)
         {
+            List<string> allBarcodes = new List<string>(allSamplebarcodes);
             string[] predefinedBarcodes = GetPredefinedBarcodesAppendWithDateInfo(name_path.Value, sDate);
-            allbarcodes.AddRange(predefinedBarcodes);
+            allBarcodes.AddRange(predefinedBarcodes);
             string sFile = Utility.GetBarcodesFolder() + name_path.Key + ".txt";
-            File.WriteAllLines(sFile, allbarcodes);
+            File.WriteAllLines(sFile, allBarcodes);
         }
         private static string[] GetPredefinedBarcodesAppendWithDateInfo(string sFile, string sDate)
         {
@@ -161,7 +162,7 @@ namespace BarcodeGenerator
             foreach (string sFilePath in allFilePaths)
             {
                 FileInfo fileInfo = new FileInfo(sFilePath);
-                panelNames.Add(fileInfo.Name, sFilePath);
+                panelNames.Add(fileInfo.Name.Replace(".txt","").Trim(), sFilePath);
             }
             return panelNames;
         }
