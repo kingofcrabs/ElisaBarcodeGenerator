@@ -17,6 +17,8 @@ namespace BarcodeGenerator
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Utility.DeleteWorkingFolder();
+            Utility.WriteExecuteResult(false);
             if(e.Args.Length >0)
             {
                 Utility.WriteExecuteResult(false);

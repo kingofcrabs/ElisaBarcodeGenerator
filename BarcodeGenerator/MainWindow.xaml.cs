@@ -32,7 +32,7 @@ namespace BarcodeGenerator
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             int gridStartPos = int.Parse(ConfigurationManager.AppSettings["StartGrid"]);
-
+            
             //flash
             this.InvalidateVisual();
             System.Threading.Thread.Sleep(200);

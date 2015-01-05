@@ -347,5 +347,11 @@ namespace BarcodeGenerator
             int sampleGrids = int.Parse(ConfigurationManager.AppSettings[stringRes.sampleGrids]);
             return sampleGrids * 16;
         }
+
+        internal static void DeleteWorkingFolder()
+        {
+            string sWorkingFolder = GetExeFolder() + stringRes.workingFolder;
+            DeleteDir(sWorkingFolder, true);
+        }
     }
 }

@@ -385,7 +385,7 @@ namespace BarcodeGenerator.Properties {
         }
         
         /// <summary>
-        ///   查找类似 0.03 的本地化字符串。
+        ///   查找类似 0.04 的本地化字符串。
         /// </summary>
         internal static string version {
             get {
